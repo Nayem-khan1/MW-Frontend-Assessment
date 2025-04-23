@@ -1,46 +1,72 @@
 import { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
-import ContactFrom from "./ContactFrom";
+import { FiArrowRight } from 'react-icons/fi';
 
 const AllBlogs = () => {
   const [blogs, setBlogs] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [nextUrl, setNextUrl] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [apiUrl, setApiUrl] = useState('https://hr.mediusware.xyz/api/website/blogs/');
+  const [apiUrl, setApiUrl] = useState("https://hr.mediusware.xyz/api/website/blogs/");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const grouped = {};
-
+  // Fetch blogs whenever apiUrl changes
   useEffect(() => {
     setLoading(true);
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
         setBlogs(data.results);
+        setNextUrl(data.next);
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching blogs:', err);
+        console.error("Error fetching blogs:", err);
         setLoading(false);
       });
   }, [apiUrl]);
 
-  // Group blogs by category name
-  blogs.forEach(blog => {
-    blog.categories.forEach(category => {
-      const name = category.name;
-      if (!grouped[name]) {
-        grouped[name] = [];
-      }
-      grouped[name].push(blog);
-    });
-  });
+  // Fetch categories only once
+  useEffect(() => {
+    fetch("https://hr.mediusware.xyz/api/website/blogs/categories/")
+      .then((res) => res.json())
+      .then((data) => {
+        setCategories(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching categories:", err);
+      });
+  }, []);
+
+  // Update API URL based on selected category
+  const handleCategoryClick = (id) => {
+    setSelectedCategory(id);
+    if (id === "All") {
+      setApiUrl("https://hr.mediusware.xyz/api/website/blogs/");
+    } else {
+      setApiUrl(`https://hr.mediusware.xyz/api/website/blogs/?category=${id}`);
+    }
+  };
+
+  // Load more blogs when "Next" button is clicked
+  const handleNext = () => {
+    if (nextUrl) {
+      setLoading(true);
+      fetch(nextUrl)
+        .then((res) => res.json())
+        .then((data) => {
+          setBlogs((prevBlogs) => [...prevBlogs, ...data.results]);
+          setNextUrl(data.next);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching next blogs:", err);
+          setLoading(false);
+        });
+    }
+  };
 
   if (loading) return <p>Loading blogs...</p>;
-
-  // Determine which blogs to show
-  const filteredBlogs = selectedCategory === "All"
-    ? blogs
-    : grouped[selectedCategory] || [];
 
   return (
     <div className="container">
@@ -50,43 +76,52 @@ const AllBlogs = () => {
         </p>
       </div>
 
-      <div className="flex items-center flex-wrap justify-center gap-4 md:py-20 sm:py-12 py-5">
-        <div>
+      {/* Category Filter Buttons */}
+      <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4 md:py-20 sm:py-12 py-5 px-2 sm:px-4 overflow-x-auto">
+        <button
+          onClick={() => handleCategoryClick("All")}
+          className={`whitespace-nowrap sm:py-[11px] py-1 sm:px-6 px-4 border rounded-3xl transition-colors duration-200 ${
+            selectedCategory === "All"
+              ? "bg-[#0060AF] text-white"
+              : "bg-white text-black"
+          }`}
+        >
+          All
+        </button>
+
+        {categories.map((category) => (
           <button
-            onClick={() => setSelectedCategory("All")}
-            className={`sm:py-[11px] py-1 sm:px-6 px-4 border rounded-3xl ${selectedCategory === "All" ? "bg-[#0060AF] text-white" : "bg-white"
-              }`}
+            key={category.id}
+            onClick={() => handleCategoryClick(category.id)}
+            className={`whitespace-nowrap sm:py-[11px] py-1 sm:px-6 px-4 border rounded-3xl transition-colors duration-200 ${
+              selectedCategory === category.id
+                ? "bg-[#0060AF] text-white"
+                : "bg-white text-black"
+            }`}
           >
-            All{" "}
-            <span className="px-[6px] py-1 rounded-lg ms-1 text-[#008F79] bg-[#EAECF0]">
-              {blogs.length}
-            </span>
-          </button>
-        </div>
-        {Object.entries(grouped).map(([categoryName, blogList]) => (
-          <button
-            key={categoryName}
-            onClick={() => setSelectedCategory(categoryName)}
-            className={`sm:py-[11px] py-1 ml-6 sm:px-6 px-4 border rounded-3xl ${selectedCategory === categoryName ? "bg-[#0060AF] text-white" : "bg-white"
-              }`}
-          >
-            <span>{categoryName}</span>
+            <span>{category.name}</span>
             <span className="ml-2 bg-[#EAECF0] px-[6px] py-1 rounded-lg text-gray-600">
-              {blogList.length}
+              {category.total_blog}
             </span>
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredBlogs.map((blog) => (
+      {/* Blog Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
+        {blogs.map((blog) => (
           <BlogCard key={blog.id} blog={blog} />
         ))}
       </div>
 
-      <div className="py-28">
-        <ContactFrom />
+      {/* Load More Button */}
+      {nextUrl && (
+        <div className="flex justify-center items-center mt-10">
+        <button onClick={handleNext} className="button bg-primary-3 text-white">
+          <FiArrowRight className="text-white text-2xl" />
+        </button>
       </div>
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import BlogHero from "./components/BlogHero";
 import AllBlogs from "./components/AllBlogs";
 import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
+import ContactForm from "./components/ContactFrom";
 
 function App() {
   return (
@@ -12,6 +13,10 @@ function App() {
           <BlogHero />
           <AllBlogs />
         </div>
+        
+      <div className="py-28">
+        <ContactForm />
+      </div>
       </div>
       <Footer />
     </>

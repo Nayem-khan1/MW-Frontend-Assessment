@@ -14,7 +14,7 @@ export default function NavBar() {
                 <span className="sr-only">Mediusware</span>
                 <img 
                   className="flex  justify-center items-center "
-                  src="/src/assets/brand.svg"
+                  src="assets/brand.svg"
                   alt="Logo"
                   width={160}
                   height={160}

@@ -41,7 +41,7 @@ const ContactForm = () => {
     };
 
     return (
-        <section className="bg-blue-300 dark:bg-slate-800 rounded-xl">
+        <section className="bg-[#01A1A3] rounded-xl">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
                 <div className="flex flex-col md:flex-row justify-center gap-10">
                     <div className="md:w-1/2">
@@ -50,7 +50,7 @@ const ContactForm = () => {
                             Drop us a line for your project or share news about your company.
                             Yes, we check this mailbox frequently!
                         </p>
-                        <div className="flex gap-4">
+                        <div className="mt-10 sm:mt-20 flex gap-4">
                             {[
                                 { title: '10+', subtitle: 'Years in business' },
                                 { title: '100+', subtitle: 'In-house employees' },
@@ -64,11 +64,11 @@ const ContactForm = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-slate-900 p-8 rounded-xl shadow-lg md:w-1/2">
-                        <h2 className="text-2xl font-bold text-blue-400 mb-6">Get 20% OFF Your First Project!</h2>
+                    <div className="bg-white p-8 rounded-xl shadow-lg md:w-1/2">
+                        <h2 className="text-3xl font-bold text-blue-400 mb-6 leading-8">Get 20% OFF <br/> Your First Project!</h2>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Full Name *
                                 </label>
                                 <input
@@ -77,12 +77,12 @@ const ContactForm = () => {
                                     value={formData.name}
                                     onChange={handleChange}
                                     placeholder="Your name"
-                                    className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm dark:bg-slate-800 dark:text-gray-100"
+                                    className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm dark:text-gray-100"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Email Address *
                                 </label>
                                 <input
@@ -91,12 +91,12 @@ const ContactForm = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                     placeholder="Your email"
-                                    className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm dark:bg-slate-800 dark:text-gray-100"
+                                    className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm dark:text-gray-100"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Message *
                                 </label>
                                 <textarea
@@ -105,7 +105,7 @@ const ContactForm = () => {
                                     onChange={handleChange}
                                     rows="5"
                                     placeholder="Write your message..."
-                                    className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm dark:bg-slate-800 dark:text-gray-100"
+                                    className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm dark:text-gray-100"
                                 ></textarea>
                             </div>
 
@@ -117,7 +117,7 @@ const ContactForm = () => {
                                     onChange={handleChange}
                                     className="accent-blue-700"
                                 />
-                                <span className="text-sm text-gray-700 dark:text-gray-300">
+                                <span className="text-sm text-gray-700">
                                     I agree to the <a href="#" className="underline text-blue-700">privacy policy</a>.
                                 </span>
                             </div>
