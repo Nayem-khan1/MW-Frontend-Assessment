@@ -3,10 +3,11 @@ import BlogCard from "./BlogCard";
 import ContactFrom from "./ContactFrom";
 
 const AllBlogs = () => {
-
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [apiUrl, setApiUrl] = useState('https://hr.mediusware.xyz/api/website/blogs/');
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
   const grouped = {};
 
   useEffect(() => {
@@ -36,7 +37,10 @@ const AllBlogs = () => {
 
   if (loading) return <p>Loading blogs...</p>;
 
-  console.log(blogs);
+  // Determine which blogs to show
+  const filteredBlogs = selectedCategory === "All"
+    ? blogs
+    : grouped[selectedCategory] || [];
 
   return (
     <div className="container">
@@ -49,37 +53,37 @@ const AllBlogs = () => {
       <div className="flex items-center flex-wrap justify-center gap-4 md:py-20 sm:py-12 py-5">
         <div>
           <button
-            className={` sm:py-[11px] py-1  sm:px-6 px-4 border rounded-3xl text-white bg-[#0060AF]  `}
+            onClick={() => setSelectedCategory("All")}
+            className={`sm:py-[11px] py-1 sm:px-6 px-4 border rounded-3xl ${selectedCategory === "All" ? "bg-[#0060AF] text-white" : "bg-white"
+              }`}
           >
             All{" "}
-            <span
-              className={`px-[6px] py-1  rounded-lg ms-1  text-[#008F79] bg-[#EAECF0] h-[20px] `}
-            >
+            <span className="px-[6px] py-1 rounded-lg ms-1 text-[#008F79] bg-[#EAECF0]">
               {blogs.length}
             </span>
           </button>
         </div>
-        <div>
-          {Object.entries(grouped).map(([categoryName, blogList]) => (
-            <button
-              key={categoryName}
-              className="sm:py-[11px] py-1 ml-6 sm:px-6 px-4 border rounded-3xl bg-white"
-            >
-              <span>{categoryName}</span>
-              <span className="ml-2 bg-[#EAECF0] px-[6px] py-1 rounded-lg">
-                {blogList.length}
-              </span>
-            </button>
-          ))}
-        </div>
-
+        {Object.entries(grouped).map(([categoryName, blogList]) => (
+          <button
+            key={categoryName}
+            onClick={() => setSelectedCategory(categoryName)}
+            className={`sm:py-[11px] py-1 ml-6 sm:px-6 px-4 border rounded-3xl ${selectedCategory === categoryName ? "bg-[#0060AF] text-white" : "bg-white"
+              }`}
+          >
+            <span>{categoryName}</span>
+            <span className="ml-2 bg-[#EAECF0] px-[6px] py-1 rounded-lg text-gray-600">
+              {blogList.length}
+            </span>
+          </button>
+        ))}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-        {
-          blogs.map(blog => <BlogCard key={blog.id} blog={blog} />)
-        }
+        {filteredBlogs.map((blog) => (
+          <BlogCard key={blog.id} blog={blog} />
+        ))}
       </div>
+
       <div className="py-28">
         <ContactFrom />
       </div>
